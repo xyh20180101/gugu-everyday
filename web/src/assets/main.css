@@ -1,0 +1,284 @@
+/* @import './base.css'; */
+
+html,
+body,
+#app,
+.n-config-provider {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+fluent-text {
+  color: var(--colorNeutralForeground2)
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: transparent !important;
+  }
+}
+
+* {
+  --n-title-text-color: var(--colorNeutralForeground2);
+  --n-content-text-color: var(--colorNeutralForeground2);
+  --n-circle-border: 2px solid var(--colorNeutralStroke1);
+  --n-line-color: var(--colorNeutralStroke2);
+  --n-text-color: var(--colorNeutralForeground2);
+  --n-border-radius: 4px;
+  --n-arrow-color: var(--colorNeutralForeground2);
+}
+
+fluent-dialog fluent-text-input::part(control) {
+  margin-top: 1px;
+}
+
+.card fluent-text-input::part(control) {
+  margin-top: 1px;
+}
+
+.n-data-table .n-data-table-td {
+  padding: 4px 12px;
+}
+
+fluent-dropdown {
+  --colorStrokeFocus1: var(--colorNeutralStroke1);
+  --colorStrokeFocus2: transparent;
+  width: 100%;
+}
+
+fluent-button {
+  transition-property: color;
+}
+
+.n-data-table-empty {
+  padding-bottom: 8px !important;
+}
+
+/* 可点击的翻页按钮 */
+.n-pagination .n-pagination-item.n-pagination-item--button {
+  background-color: transparent;
+  border: none;
+  color: var(--colorNeutralForeground2);
+}
+
+/* 可点击的翻页按钮 - 悬浮*/
+.n-pagination .n-pagination-item:not(.n-pagination-item--disabled):hover.n-pagination-item--button {
+  background-color: transparent;
+  border: none;
+  color: var(--colorCompoundBrandStroke);
+}
+
+/* 不可点击的翻页按钮 */
+.n-pagination .n-pagination-item.n-pagination-item--disabled.n-pagination-item--button {
+  background-color: transparent;
+  border: none;
+  color: var(--colorNeutralForegroundDisabled);
+}
+
+/* 可点击的页码按钮 */
+.n-pagination-item.n-pagination-item--clickable {
+  background-color: transparent;
+  border: none;
+  color: var(--colorNeutralForeground2);
+}
+
+/* 可点击的页码按钮 - 悬浮 */
+.n-pagination .n-pagination-item:not(.n-pagination-item--disabled):hover {
+  background-color: transparent;
+  border: none;
+  color: var(--colorCompoundBrandStroke);
+}
+
+/* 不可点击的页码按钮(当前页) */
+.n-pagination .n-pagination-item:not(.n-pagination-item--disabled).n-pagination-item--active {
+  background: transparent;
+  border: none;
+  color: var(--colorNeutralForegroundDisabled);
+}
+
+fluent-tab[aria-selected='true']::after {
+  z-index: 1;
+}
+
+.fake-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.n-color-picker{
+  height: 32px;
+}
+
+.n-color-picker-trigger{
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+  border-bottom-color: var(--colorNeutralStrokeAccessible);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.n-color-picker-trigger:hover{
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Hover);
+  border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.n-color-picker-panel {
+  background-color: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground2);
+}
+
+.n-input {
+  background-color: var(--colorNeutralBackground1) !important;
+  --n-caret-color: unset !important;
+  --n-box-shadow-focus: none !important;
+}
+
+.n-input .n-input__border {
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+  border-bottom-color: var(--colorNeutralStrokeAccessible);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.n-input .n-input__state-border {
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+  border-bottom-color: var(--colorNeutralStrokeAccessible);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.n-input:not(.n-input--disabled):hover .n-input__state-border {
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Hover);
+  border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.n-input:not(.n-input--disabled):focus-within .n-input__state-border::after {
+  transform: scaleX(1);
+  transition-property: transform;
+  transition-duration: var(--durationNormal);
+  transition-delay: var(--curveDecelerateMid);
+}
+
+.n-input:not(.n-input--disabled) .n-input__state-border::after {
+  box-sizing: border-box;
+  content: '';
+  position: absolute;
+  left: -1px;
+  bottom: -1px;
+  right: -1px;
+  height: max(2px, var(--borderRadiusMedium));
+  border-radius: 0 0 var(--borderRadiusMedium) var(--borderRadiusMedium);
+  border-bottom: 2px solid var(--colorCompoundBrandStroke);
+  clip-path: inset(calc(100% - 2px) 1px 0px);
+  transform: scaleX(0);
+  transition-property: transform;
+  transition-duration: var(--durationUltraFast);
+  transition-delay: var(--curveAccelerateMid);
+}
+
+.n-input:not(.n-input--disabled).n-input--focus .n-input__state-border{
+  border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Hover);
+  border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+  border-radius: var(--borderRadiusMedium);
+}
+
+fluent-dialog::part(dialog) {
+  max-width: 600px;
+  max-height: fit-content;
+  left: 16px;
+  right: 16px;
+  top: 16px;
+  bottom: 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 32px);
+  overflow: visible;
+}
+
+fluent-dialog-body {
+  height: -webkit-fill-available;
+  max-height: fit-content;
+  grid-auto-rows: max-content;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+
+fluent-dialog-body::part(title) {
+  max-height: fit-content;
+  padding: 20px !important;
+  margin-block-end: unset;
+  margin-block-start: unset;
+  padding-block-end: unset;
+  padding-block-start: unset;
+  border-radius: 4px;
+}
+
+fluent-dialog-body::part(actions) {
+  max-height: fit-content;
+  padding: 20px !important;
+  margin-block-end: unset;
+  margin-block-start: unset;
+  padding-block-end: unset;
+  padding-block-start: unset;
+  border-radius: 4px;
+}
+
+fluent-dialog-body::part(content) {
+  min-height: 0;
+}
+
+fluent-field {
+  width: 100%;
+}
+
+fluent-text-input,
+fluent-textarea {
+  width: 100%;
+  max-width: 100%;
+}
+
+.field-error {
+  color: var(--colorStatusDangerForeground1);
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flex-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
