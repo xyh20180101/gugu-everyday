@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: ${{ variables.ALIYUN_REGISTRY }}
+  REGISTRY: ${{ vars.ALIYUN_REGISTRY }}
   IMAGE_NAME: wl2333/gugu-everyday
 
 jobs:
