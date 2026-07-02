@@ -130,7 +130,7 @@ defineExpose({ open })
               <label slot="label">{{ $t('project.progressUnit') }}</label>
               <fluent-text-input slot="input" spellcheck="false" autocomplete="off" v-model="project.extraData.progressUnit" />
             </fluent-field>
-            <fluent-field label-position="above" v-if="projectTypeList.find(p => p.id === project.typeId)?.progressType === 1">
+            <fluent-field label-position="above" v-show="projectTypeList.find(p => p.id === project.typeId)?.progressType === 1">
               <label slot="label">{{ $t('project.steps') }}</label>
               <fluent-textarea block slot="input" spellcheck="false" :placeholder="$t('project.stepsPlaceholder')" v-model="stepsString"
                 @input="() => { project.extraData.steps = stepsString.split(/\r?\n/).filter(Boolean) }" />
