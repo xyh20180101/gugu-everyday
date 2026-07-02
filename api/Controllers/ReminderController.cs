@@ -30,29 +30,54 @@ public class ReminderController : BaseController
         _userInfoRepository = userInfoRepository;
     }
 
-    public class GetListRequest : PageRequest
+    public class GetSummaryResponse
     {
-        public long? ProjectId { get; set; }
+        public long ProjectId { get; set; }
+        public string ProjectName { get; set; } = string.Empty;
+        public DateTime LatestReminderTime { get; set; }
+        public int TotalCount { get; set; }
+        public int IncrementCount { get; set; }
+        public ICollection<ReminderDto> Details { get; set; } = [];
     }
 
-    [HttpGet("")]
-    public async Task<PageResponse<ReminderDto>> GetList([FromQuery] GetListRequest request)
+    [HttpGet("summary")]
+    public async Task<List<GetSummaryResponse>> GetSummary()
     {
-        var queryable = (await _repository.GetQueryableAsync()).Include(p => p.Project).Where(p => p.UserId == CurrentUserId);
+        var queryable = (await _repository.GetQueryableAsync())
+            .Include(r => r.Project)
+            .Where(r => r.UserId == CurrentUserId);
 
-        if (request.ProjectId is not null)
-            queryable = queryable.Where(p => p.ProjectId == request.ProjectId);
+        var allReminders = queryable.OrderByDescending(r => r.CreationTime).ToList();
 
-        queryable = queryable.OrderByDescending(p => p.CreationTime);
+        var grouped = allReminders
+            .GroupBy(r => r.ProjectId)
+            .Select(g =>
+            {
+                var ordered = g.ToList();
+                var latest = ordered[0];
+                var totalCount = ordered.Count;
+                var incrementCount = CalcIncrement(ordered);
 
-        var count = queryable.Count();
-        var items = queryable.Skip(request.Skip).Take(request.Count).ToList();
+                return new GetSummaryResponse
+                {
+                    ProjectId = g.Key,
+                    ProjectName = latest.Project?.Name ?? string.Empty,
+                    LatestReminderTime = latest.CreationTime,
+                    TotalCount = totalCount,
+                    IncrementCount = incrementCount,
+                    Details = ordered.Take(20).ToList().ToDto()
+                };
+            })
+            .OrderByDescending(x => x.LatestReminderTime)
+            .ToList();
 
-        return new PageResponse<ReminderDto>
+        return grouped;
+
+        int CalcIncrement(List<Reminder> reminders)
         {
-            Items = items.ToDto(),
-            TotalCount = count
-        };
+            var today = DateTime.Today;
+            return reminders.Count(r => r.CreationTime >= today.AddDays(-1));
+        }
     }
 
     [HttpPost("")]
@@ -67,26 +92,21 @@ public class ReminderController : BaseController
         if (userInfo is null || !userInfo.IsAllowReminder)
             throw new StatusCodeException("不准催更", 403);
 
-        await _ipLimitService.CheckAsync(dto.ProjectId.ToString());
+        await _ipLimitService.CheckAsync("create-reminder", dto.ProjectId.ToString());
 
         var entity = new Reminder
         {
             UserId = project.UserId,
             ProjectId = project.Id,
-            Ip = GetIpAddress(),
+            Ip =  _ipLimitService.GetIpAddress(),
             IpLocation = string.Empty,
             UserAgent = HttpContext.Request.Headers.UserAgent.ToString()
         };
 
         await _repository.InsertAsync(entity, true);
 
-        return entity.ToDto();
-    }
+        await _ipLimitService.RecordAsync("create-reminder", dto.ProjectId.ToString(), TimeSpan.FromMinutes(5), 3);
 
-    string GetIpAddress()
-    {
-        if (HttpContext.Request.Headers.TryGetValue("X-Real-IP", out var realIp) && !string.IsNullOrEmpty(realIp))
-            return realIp.ToString().Split(',')[0].Trim();
-        return HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        return entity.ToDto();
     }
 }

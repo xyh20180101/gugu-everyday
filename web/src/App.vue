@@ -122,6 +122,7 @@ const themeOverrides = {
   box-sizing: border-box;
   justify-self: center;
   width: 100%;
+  align-items: center;
 }
 
 .message-stack.top {
@@ -138,6 +139,7 @@ const themeOverrides = {
   gap: 8px;
   pointer-events: auto;
   align-items: center;
+  width: fit-content;
 }
 
 .fade-enter-active,

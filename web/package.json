@@ -1,6 +1,6 @@
 {
   "name": "gugu-everyday",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -12,15 +12,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fluentui/web-components": "^3.0.0-rc.1",
+    "@fluentui/web-components": "^3.0.0",
     "echarts": "^6.0.0",
     "js-sha256": "^0.11.1",
-    "vue": "^3.5.18",
+    "vue": "^3.5.39",
     "vue-i18n": "^11.4.6",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue": "^6.0.7",
     "naive-ui": "^2.43.1",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"

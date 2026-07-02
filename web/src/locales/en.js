@@ -36,12 +36,14 @@ export default {
   },
   home: {
     project: 'Project',
-    time: 'Time',
+    time: 'Last Reminder Time',
     reminderLog: 'Reminder Log',
+    reminderCount: 'Reminder Count',
     noData: 'No data',
   },
   login: {
     title: 'Login',
+    tips: 'Please use your registered email to log in from now on',
     email: 'Email',
     password: 'Password',
     forgotPassword: 'Forgot Password',

@@ -57,7 +57,7 @@ const showSuccess = ref(false)
       <label class="title">{{ $t('resetPassword.title') }}</label>
       <fluent-field label-position="above">
         <label class="hide-required" slot="label">{{ $t('resetPassword.password') }}</label>
-        <fluent-text-input slot="input" required pattern="^(?=.{6,20}$)[\x21-\x7E]+$" type="password" autocomplete="off"
+        <fluent-text-input slot="input" :required="true" pattern="^(?=.{6,20}$)[\x21-\x7E]+$" type="password" autocomplete="off"
           v-model="resetPasswordModel.password"></fluent-text-input>
         <fluent-text slot="message" flag="value-missing" class="field-error">
           {{ $t('resetPassword.passwordRule') }}

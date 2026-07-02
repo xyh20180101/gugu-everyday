@@ -9,25 +9,36 @@ const { t } = useI18n()
 
 const reminderColumns = [{
   title: t('home.project'),
-  key: 'project.name',
+  key: 'projectName',
   minWidth: 60
 },
 {
+  title: t('home.reminderCount'),
+  key: 'totalCount',
+  minWidth: 60,
+  render(row) {
+    return h(
+      'fluent-text',
+      {},
+      { default: () => row.incrementCount > 0 ? `${row.totalCount} (↑${row.incrementCount})` : `${row.totalCount}`}
+    )
+  }
+},
+{
   title: t('home.time'),
-  key: 'creationTime',
+  key: 'latestReminderTime',
   minWidth: 120,
   render(row) {
     return h(
       'fluent-text',
       {},
-      { default: () => new Date(row.creationTime + 'Z').toLocaleString() }
+      { default: () => new Date(row.latestReminderTime + 'Z').toLocaleString() }
     )
   }
 }]
 
 const waterfallData = ref([])
-const reminderData = ref({})
-const reminderPageRequest = ref({ page: 1, count: 10 })
+const reminderData = ref([])
 
 const now = new Date()
 const year = ref(now.getFullYear())
@@ -43,7 +54,7 @@ const getWaterfall = async () => {
 }
 
 const getReminder = async () => {
-  reminderData.value = await reminder.getList({ skip: (reminderPageRequest.value.page - 1) * reminderPageRequest.value.count, count: reminderPageRequest.value.count })
+  reminderData.value = await reminder.getSummary()
 }
 </script>
 
@@ -54,7 +65,7 @@ const getReminder = async () => {
     </GuguWaterfall>
     <fluent-text weight="bold">{{ $t('home.reminderLog') }}</fluent-text>
     <n-scrollbar style="height: 100%;">
-      <n-data-table :columns="reminderColumns" :data="reminderData?.items" :bordered="false">
+      <n-data-table :columns="reminderColumns" :data="reminderData" :bordered="false">
         <template #empty>
           <fluent-text>{{ $t('home.noData') }}</fluent-text>
         </template>

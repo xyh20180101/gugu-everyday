@@ -19,12 +19,14 @@ public class GlobalExceptionFilter : IExceptionFilter
     {
         var statusCode = HttpStatusCode.InternalServerError;
         var message = "服务器内部错误";
+        int? retryAfter = null;
 
         switch (context.Exception)
         {
             case StatusCodeException scEx:
                 statusCode = (HttpStatusCode)scEx.HttpStatusCode;
                 message = scEx.Message;
+                retryAfter = scEx.RetryAfterSeconds;
                 break;
             case UserFriendlyException ufEx:
                 statusCode = HttpStatusCode.BadRequest;
@@ -43,7 +45,7 @@ public class GlobalExceptionFilter : IExceptionFilter
                 break;
         }
 
-        context.Result = new ObjectResult(new
+        var result = new ObjectResult(new
         {
             error = new { message }
         })
@@ -51,6 +53,12 @@ public class GlobalExceptionFilter : IExceptionFilter
             StatusCode = (int)statusCode
         };
 
+        if (retryAfter.HasValue)
+        {
+            context.HttpContext.Response.Headers["Retry-After"] = retryAfter.Value.ToString();
+        }
+
+        context.Result = result;
         context.ExceptionHandled = true;
     }
 }

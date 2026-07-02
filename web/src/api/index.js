@@ -97,6 +97,6 @@ export const home = {
 }
 
 export const reminder = {
-  getList: (params) => request(`${BASE}/api/reminder?${new URLSearchParams(params)}`),
+  getSummary: (params) => request(`${BASE}/api/reminder/summary?${new URLSearchParams(params)}`),
   create: (data) => request(`${BASE}/api/reminder`, { method: 'POST', body: JSON.stringify(data) }),
 }

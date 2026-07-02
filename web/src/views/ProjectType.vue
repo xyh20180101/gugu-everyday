@@ -194,24 +194,24 @@ const onDelete = async () => {
             trigger="none">
             <div class="flex-col">
               <fluent-field label-position="above">
-                <label class="hide-required" slot="label">{{ $t('common.name') }}</label>
-                <fluent-text-input slot="input" required spellcheck="false" autocomplete="off"
+                <label slot="label">{{ $t('common.name') }}</label>
+                <fluent-text-input slot="input" :required="true" spellcheck="false" autocomplete="off"
                   v-model="projectType.name"></fluent-text-input>
                 <fluent-text slot="message" flag="value-missing" class="field-error">
                   {{ $t('common.cannotBeEmpty') }}
                 </fluent-text>
               </fluent-field>
               <fluent-field label-position="above">
-                <label class="hide-required" slot="label">{{ $t('projectType.progressType') }}</label>
-                <fluent-dropdown slot="input" type="select" :value="projectType.progressType"
+                <label slot="label">{{ $t('projectType.progressType') }}</label>
+                <fluent-dropdown slot="input" type="select"
                   @change="(event) => { projectType.progressType = event.target.value }">
                   <fluent-listbox>
-                    <fluent-option :value="0" :name="$t('projectType.progressTypeProgress')">
-                      <fluent-avatar slot="start" size="32" color="blue"></fluent-avatar>
+                    <fluent-option :value="0" :selected="projectType.progressType === 0"
+                      :name="$t('projectType.progressTypeProgress')">
                       {{ $t('projectType.progressTypeProgress') }}
                     </fluent-option>
-                    <fluent-option :value="1" :name="$t('projectType.progressTypeStep')">
-                      <fluent-avatar slot="start" size="32" color="blue"></fluent-avatar>
+                    <fluent-option :value="1" :selected="projectType.progressType === 1"
+                      :name="$t('projectType.progressTypeStep')">
                       {{ $t('projectType.progressTypeStep') }}
                     </fluent-option>
                   </fluent-listbox>

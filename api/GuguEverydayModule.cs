@@ -9,6 +9,8 @@ using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Auditing;
@@ -153,6 +155,7 @@ public class GuguEverydayModule : AbpModule
                     .AllowCredentials();
             });
         });
+        builder.Services.AddHealthChecks();
         Console.WriteLine("[启动] 服务注册完成");
     }
 
@@ -174,6 +177,7 @@ public class GuguEverydayModule : AbpModule
         {
             if (env.IsDevelopment())
                 endpoints.MapOpenApi();
+            endpoints.MapHealthChecks("/healthz");
             endpoints.MapControllers();
         });
         Console.WriteLine("[启动] 中间件配置完成");

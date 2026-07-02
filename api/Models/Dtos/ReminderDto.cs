@@ -6,7 +6,5 @@ public class ReminderDto
 
     public long ProjectId { get; set; }
 
-    public ProjectDto Project { get; set; }
-
     public DateTime CreationTime { get; set; }
 }

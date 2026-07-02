@@ -115,7 +115,7 @@ const onUpdatePassword = async () => {
         <div style="display: flex;flex-direction: column;gap: 16px;">
           <fluent-field label-position="above">
             <label class="hide-required" slot="label">{{ $t('settings.userName') }}</label>
-            <fluent-text-input slot="input" required spellcheck="false" v-model="userInfo.userName"></fluent-text-input>
+            <fluent-text-input slot="input" :required="true" spellcheck="false" v-model="userInfo.userName"></fluent-text-input>
             <fluent-text slot="message" flag="value-missing" class="field-error">
               {{ $t('common.cannotBeEmpty') }}
             </fluent-text>
@@ -132,7 +132,7 @@ const onUpdatePassword = async () => {
           </div>
           <fluent-field label-position="above">
             <label class="hide-required" slot="label">{{ $t('settings.showPageTitle') }}</label>
-            <fluent-text-input slot="input" required spellcheck="false"
+            <fluent-text-input slot="input" :required="true" spellcheck="false"
               v-model="userInfo.showPageTitle"></fluent-text-input>
             <fluent-text slot="message" flag="value-missing" class="field-error">
               {{ $t('common.cannotBeEmpty') }}
@@ -179,7 +179,7 @@ const onUpdatePassword = async () => {
             <div class="flex-col">
               <fluent-field label-position="above">
                 <label class="hide-required" slot="label">{{ $t('settings.oldPassword') }}</label>
-                <fluent-text-input slot="input" required pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
+                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
                   v-model="updatePasswordModel.oldPassword"></fluent-text-input>
                 <fluent-text slot="message" flag="value-missing" class="field-error">
                   {{ $t('settings.passwordRule') }}
@@ -190,7 +190,7 @@ const onUpdatePassword = async () => {
               </fluent-field>
               <fluent-field label-position="above">
                 <label class="hide-required" slot="label">{{ $t('settings.newPassword') }}</label>
-                <fluent-text-input slot="input" required pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
+                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
                   v-model="updatePasswordModel.newPassword"></fluent-text-input>
                 <fluent-text slot="message" flag="value-missing" class="field-error">
                   {{ $t('settings.passwordRule') }}

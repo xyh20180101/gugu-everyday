@@ -9,7 +9,7 @@ public class CustomAuditLogContributor : AuditLogContributor
     public override void PreContribute(AuditLogContributionContext context)
     {
         context.AuditInfo.UserName = long.TryParse(context.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id.ToString() : null;
-        context.AuditInfo.ClientIpAddress = IpLimitService.GetIpAddress(context.ServiceProvider.GetRequiredService<IHttpContextAccessor>());
+        context.AuditInfo.ClientIpAddress = context.ServiceProvider.GetRequiredService<IpLimitService>().GetIpAddress();
         base.PreContribute(context);
     }
 }

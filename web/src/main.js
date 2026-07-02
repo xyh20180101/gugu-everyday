@@ -25,63 +25,27 @@ window.addEventListener('storage', (e) => {
         themeName.value = e.newValue
 })
 
-import {
-    FluentDesignSystem,
-    ButtonDefinition,
-    CompoundButtonDefinition,
-    DialogBodyDefinition,
-    DialogDefinition,
-    DividerDefinition,
-    DrawerDefinition,
-    DrawerBodyDefinition,
-    DropdownDefinition,
-    DropdownOptionDefinition,
-    FieldDefinition,
-    LabelDefinition,
-    LinkDefinition,
-    ListboxDefinition,
-    MenuButtonDefinition,
-    MenuDefinition,
-    MenuListDefinition,
-    MenuItemDefinition,
-    MessageBarDefinition,
-    SpinnerDefinition,
-    SwitchDefinition,
-    TabDefinition,
-    TablistDefinition,
-    TextAreaDefinition,
-    TextDefinition,
-    TextInputDefinition,
-    TreeDefinition,
-    TreeItemDefinition
-} from '@fluentui/web-components'
-ButtonDefinition.define(FluentDesignSystem.registry)
-CompoundButtonDefinition.define(FluentDesignSystem.registry)
-DialogBodyDefinition.define(FluentDesignSystem.registry)
-DialogDefinition.define(FluentDesignSystem.registry)
-DividerDefinition.define(FluentDesignSystem.registry)
-DrawerDefinition.define(FluentDesignSystem.registry)
-DrawerBodyDefinition.define(FluentDesignSystem.registry)
-DropdownDefinition.define(FluentDesignSystem.registry)
-DropdownOptionDefinition.define(FluentDesignSystem.registry)
-FieldDefinition.define(FluentDesignSystem.registry)
-LabelDefinition.define(FluentDesignSystem.registry)
-LinkDefinition.define(FluentDesignSystem.registry)
-ListboxDefinition.define(FluentDesignSystem.registry)
-MenuButtonDefinition.define(FluentDesignSystem.registry)
-MenuDefinition.define(FluentDesignSystem.registry)
-MenuListDefinition.define(FluentDesignSystem.registry)
-MenuItemDefinition.define(FluentDesignSystem.registry)
-MessageBarDefinition.define(FluentDesignSystem.registry)
-SpinnerDefinition.define(FluentDesignSystem.registry)
-SwitchDefinition.define(FluentDesignSystem.registry)
-TabDefinition.define(FluentDesignSystem.registry)
-TablistDefinition.define(FluentDesignSystem.registry)
-TextAreaDefinition.define(FluentDesignSystem.registry)
-TextDefinition.define(FluentDesignSystem.registry)
-TextInputDefinition.define(FluentDesignSystem.registry)
-TreeDefinition.define(FluentDesignSystem.registry)
-TreeItemDefinition.define(FluentDesignSystem.registry)
+import '@fluentui/web-components/avatar.js';
+import '@fluentui/web-components/button.js';
+import '@fluentui/web-components/dialog.js';
+import '@fluentui/web-components/dialog-body.js';
+import '@fluentui/web-components/divider.js';
+import '@fluentui/web-components/drawer.js';
+import '@fluentui/web-components/drawer-body.js';
+import '@fluentui/web-components/dropdown.js';
+import '@fluentui/web-components/field.js';
+import '@fluentui/web-components/listbox.js';
+import '@fluentui/web-components/menu.js';
+import '@fluentui/web-components/message-bar.js';
+import '@fluentui/web-components/option.js';
+import '@fluentui/web-components/spinner.js';
+import '@fluentui/web-components/switch.js';
+import '@fluentui/web-components/tab.js';
+import '@fluentui/web-components/tablist.js';
+import '@fluentui/web-components/text.js';
+import '@fluentui/web-components/textarea.js';
+import '@fluentui/web-components/text-input.js';
+import '@fluentui/web-components/tooltip.js';
 
 const app = createApp(App)
 

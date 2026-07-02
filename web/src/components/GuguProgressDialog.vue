@@ -128,8 +128,8 @@ defineExpose({ open })
               <fluent-field label-position="above">
                 <label slot="label">{{ $t('progress.current') }}</label>
                 <fluent-text-input v-if="project?.type?.progressType === 0 || !project?.extraData?.steps || project?.extraData?.steps?.length === 0"
-                  slot="input" required spellcheck="false" autocomplete="off" v-model="progress.currentProgress" />
-                <fluent-dropdown v-else slot="input" required type="combobox" :value="progress.currentProgress"
+                  slot="input" :required="true" spellcheck="false" autocomplete="off" v-model="progress.currentProgress" />
+                <fluent-dropdown v-else slot="input" :required="true" type="combobox" :value="progress.currentProgress"
                   @change="(e) => progress.currentProgress = e.target.value">
                   <fluent-listbox>
                     <fluent-option v-for="step in project.extraData.steps" :value="step" :name="step">{{ step }}</fluent-option>

@@ -8,7 +8,7 @@ import {
 } from 'echarts/components'
 import { BarChart } from 'echarts/charts'
 import { SVGRenderer } from 'echarts/renderers'
-import { ref, onMounted, inject, watch, defineModel } from 'vue'
+import { ref, onMounted, inject, watch } from 'vue'
 import { getProgressText } from '@/public'
 
 const model = defineModel()

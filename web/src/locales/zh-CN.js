@@ -36,12 +36,14 @@ export default {
   },
   home: {
     project: '项目',
-    time: '时间',
+    time: '最近催更时间',
     reminderLog: '催更记录',
+    reminderCount: '催更次数',
     noData: '暂无数据',
   },
   login: {
     title: '登录',
+    tips: '此前使用登录名登录的, 请改用注册邮箱登录',
     email: '邮箱',
     password: '密码',
     forgotPassword: '忘记密码',

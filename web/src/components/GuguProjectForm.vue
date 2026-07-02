@@ -80,15 +80,14 @@ defineExpose({ open })
           <div class="flex-col">
             <fluent-field label-position="above">
               <label slot="label">{{ $t('common.name') }}</label>
-              <fluent-text-input slot="input" required spellcheck="false" autocomplete="off" v-model="project.name" />
+              <fluent-text-input slot="input" :required="true" spellcheck="false" autocomplete="off" v-model="project.name" />
               <fluent-text slot="message" flag="value-missing" class="field-error">{{ $t('common.cannotBeEmpty') }}</fluent-text>
             </fluent-field>
             <fluent-field label-position="above">
               <label slot="label">{{ $t('common.type') }}</label>
-              <fluent-dropdown slot="input" required type="combobox" :value="project.typeId" :disabled="!isCreate" @change="onTypeChange">
+              <fluent-dropdown slot="input" :required="true" type="combobox" :value="project.typeId" :disabled="!isCreate" @change="onTypeChange">
                 <fluent-listbox>
                   <fluent-option v-for="pt in projectTypeList" :value="pt.id" :name="pt.name">
-                    <fluent-avatar slot="start" size="32" color="blue" />
                     {{ pt.name }}
                   </fluent-option>
                 </fluent-listbox>

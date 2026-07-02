@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Caching.Distributed;
-using Volo.Abp;
 
 namespace GuguEveryday.Services;
 
 public class IpLimitService
 {
-    private readonly TimeSpan Duration = TimeSpan.FromMinutes(5);
-    private readonly int LimitCount = 3;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDistributedCache _distributedCache;
 
@@ -16,35 +13,84 @@ public class IpLimitService
         _distributedCache = distributedCache;
     }
 
-    public async Task CheckAsync(string uniqueKey, string? errorMessage = null)
+    public async Task CheckAsync(string action, string uniqueKey, string? errorMessage = null, TimeSpan? blockDuration = null)
     {
-        var ip = GetIpAddress(_httpContextAccessor);
-        var key = $"ipLimit:{ip}:{uniqueKey}";
+        var ip = GetIpAddress();
+        errorMessage = string.IsNullOrEmpty(errorMessage) ? "操作过于频繁，请稍后再试" : errorMessage;
+
+        var key = string.IsNullOrEmpty(uniqueKey) ? $"ipLimit:{ip}:{action}" : $"ipLimit:{ip}:{action}:{uniqueKey}";
+        var blockKey = string.IsNullOrEmpty(uniqueKey) ? $"ipBlock:{ip}:{action}" : $"ipBlock:{ip}:{action}:{uniqueKey}";
+
+        if (blockDuration is not null && blockDuration != TimeSpan.Zero)
+        {
+            var blockValue = await _distributedCache.GetStringAsync(blockKey);
+            if (!string.IsNullOrEmpty(blockValue))
+            {
+                //拉黑了还试, 继续拉黑
+                await _distributedCache.SetStringAsync(blockKey, "1", new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = blockDuration
+                });
+                throw new StatusCodeException(errorMessage, 429);
+            }
+        }
+
         var value = await _distributedCache.GetStringAsync(key);
-        errorMessage = string.IsNullOrEmpty(errorMessage) ? "调用次数超过限制" : errorMessage;
+        //到达上限后, 继续调用不延续时长
+        if (!string.IsNullOrEmpty(value) && int.Parse(value) == -1)
+            throw new StatusCodeException(errorMessage, 429);
+    }
+
+    public async Task RecordAsync(string action, string uniqueKey, TimeSpan duration, int limitCount, TimeSpan? blockDuration = null)
+    {
+        var ip = GetIpAddress();
+
+        var key = string.IsNullOrEmpty(uniqueKey) ? $"ipLimit:{ip}:{action}" : $"ipLimit:{ip}:{action}:{uniqueKey}";
+        var blockKey = string.IsNullOrEmpty(uniqueKey) ? $"ipBlock:{ip}:{action}" : $"ipBlock:{ip}:{action}:{uniqueKey}";
+
+        var value = await _distributedCache.GetStringAsync(key);
         if (string.IsNullOrEmpty(value))
         {
             await _distributedCache.SetStringAsync(key, "1", new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = Duration
+                AbsoluteExpirationRelativeToNow = duration
             });
         }
         else
         {
-            var count = int.Parse(value);
-            count++;
-            await _distributedCache.SetStringAsync(key, int.Min(count, LimitCount).ToString(), new DistributedCacheEntryOptions
+            var lastCount = int.Parse(value);
+
+            //上次已达上限
+            if (lastCount == -1)
             {
-                AbsoluteExpirationRelativeToNow = Duration
+                await _distributedCache.SetStringAsync(key, "-1", new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = duration
+                });
+                return;
+            }
+
+            var currentCount = lastCount++;
+
+            //上次未达上限,本次已达上限
+            if (blockDuration is not null && blockDuration != TimeSpan.Zero && currentCount >= limitCount)
+            {
+                await _distributedCache.SetStringAsync(blockKey, "1", new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = blockDuration
+                });
+            }
+
+            await _distributedCache.SetStringAsync(key, (currentCount >= limitCount ? -1 : currentCount).ToString(), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = duration
             });
-            if (count > LimitCount)
-                throw new StatusCodeException(errorMessage, 403);
-        }        
+        }
     }
 
-    public static string GetIpAddress(IHttpContextAccessor httpContextAccessor)
+    public string GetIpAddress()
     {
-        var httpContext = httpContextAccessor.HttpContext;
+        var httpContext = _httpContextAccessor.HttpContext;
         if (httpContext?.Request.Headers.TryGetValue("X-Real-IP", out var realIp) == true && !string.IsNullOrEmpty(realIp))
             return realIp.ToString().Split(',')[0].Trim();
         return httpContext?.Connection.RemoteIpAddress?.ToString() ?? string.Empty;

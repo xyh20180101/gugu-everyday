@@ -20,6 +20,7 @@ public class AuthController : BaseController
     private readonly JwtService _jwtService;
     private readonly PoWService _powService;
     private readonly EmailService _emailService;
+    private readonly IpLimitService _ipLimitService;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
     private readonly IDistributedCache _cache;
     private readonly ILogger<AuthController> _logger;
@@ -31,6 +32,7 @@ public class AuthController : BaseController
         JwtService jwtService,
         PoWService powService,
         EmailService emailService,
+        IpLimitService ipLimitService,
         IConnectionMultiplexer connectionMultiplexer,
         IDistributedCache cache,
         ILogger<AuthController> logger)
@@ -41,6 +43,7 @@ public class AuthController : BaseController
         _jwtService = jwtService;
         _powService = powService;
         _emailService = emailService;
+        _ipLimitService = ipLimitService;
         _connectionMultiplexer = connectionMultiplexer;
         _cache = cache;
         _logger = logger;
@@ -72,11 +75,8 @@ public class AuthController : BaseController
         if (!powValid)
             throw new StatusCodeException("PoW验证失败");
 
-        var ip = IpLimitService.GetIpAddress(HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>());
-        var rateLimitKey = $"RegisterRateLimit:{ip}";
-        var lastRequest = await _cache.GetStringAsync(rateLimitKey);
-        if (lastRequest != null)
-            throw new StatusCodeException("操作过于频繁，请60秒后再试", 429);
+        await _ipLimitService.CheckAsync("register", string.Empty);
+        await _ipLimitService.RecordAsync("register", string.Empty, TimeSpan.FromMinutes(1), 1);
 
         if (await _userRepository.AnyAsync(u => u.Email == request.Email))
             throw new StatusCodeException("邮箱已注册", 409);
@@ -109,11 +109,6 @@ public class AuthController : BaseController
         };
 
         await _userInfoRepository.InsertAsync(userInfo);
-
-        await _cache.SetStringAsync(rateLimitKey, "1", new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
-        });
 
         await _emailService.SendActivationEmailAsync(user.Id, request.Email);
     }
@@ -203,47 +198,18 @@ public class AuthController : BaseController
     [HttpPost("login")]
     public async Task<object> Login([FromBody] LoginRequest request)
     {
-        var ip = IpLimitService.GetIpAddress(HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>());
-        var blockedKey = $"LoginBlocked:{ip}";
-        if (await _cache.GetStringAsync(blockedKey) != null)
-            throw new StatusCodeException("登录过于频繁，请稍后再试", 429);
-
-        var attemptKey = $"LoginAttempt:{ip}";
-        var attemptValue = await _cache.GetStringAsync(attemptKey);
-        if (string.IsNullOrEmpty(attemptValue))
-        {
-            await _cache.SetStringAsync(attemptKey, "1", new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
-            });
-        }
-        else
-        {
-            var count = int.Parse(attemptValue) + 1;
-            if (count > 20)
-            {
-                await _cache.SetStringAsync(blockedKey, "1", new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-                });
-                throw new StatusCodeException("登录过于频繁，请稍后再试", 429);
-            }
-            await _cache.SetStringAsync(attemptKey, count.ToString(), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60)
-            });
-        }
-
         var powValid = await _powService.VerifyPoWChallengeAsync(request.Email, request.Nonce, request.Counter);
         if (!powValid)
             throw new StatusCodeException("PoW验证失败");
 
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
-        if (user is null)
-            throw new StatusCodeException("邮箱或密码错误", 403);
+        await _ipLimitService.CheckAsync("login", request.Email, null, TimeSpan.FromMinutes(10));
 
-        if (!_passwordService.VerifyPassword(request.Password, user.Salt, user.PasswordHash))
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
+        if (user is null || !_passwordService.VerifyPassword(request.Password, user.Salt, user.PasswordHash))
+        {
+            await _ipLimitService.RecordAsync("login", request.Email, TimeSpan.FromMinutes(1), 20, TimeSpan.FromMinutes(10));
             throw new StatusCodeException("邮箱或密码错误", 403);
+        }
 
         user.LastLoginAt = DateTime.UtcNow;
         var token = _jwtService.GenerateToken(user);
@@ -276,6 +242,9 @@ public class AuthController : BaseController
         var powValid = await _powService.VerifyPoWChallengeAsync(request.Email, request.Nonce, request.Counter);
         if (!powValid)
             throw new StatusCodeException("PoW验证失败");
+
+        await _ipLimitService.CheckAsync("reset-password", request.Email);
+        await _ipLimitService.RecordAsync("reset-password", request.Email, TimeSpan.FromMinutes(1), 1);
 
         var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user is null)
