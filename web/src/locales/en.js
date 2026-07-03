@@ -61,7 +61,7 @@ export default {
     verifyEmailSent: 'Verification email sent, please click the link to activate your account',
     resetEmailSent: 'Reset link sent to your email, valid for 15 min',
     sessionExpired: 'Session expired',
-    serverError: 'Server error',
+    serverError: 'Server is gugu',
     networkError: 'Network error, please check your connection',
   },
   project: {
@@ -121,7 +121,7 @@ export default {
     showPageTitle: 'Show Page Title',
     enableShowPage: 'Enable Show Page',
     enableReminder: 'Allow Reminders',
-    mask: 'Name Mask',
+    mask: 'Project Name Mask',
     saved: 'Saved',
     linkCopied: 'Copied',
     linkCopyFailed: 'Copy failed',
