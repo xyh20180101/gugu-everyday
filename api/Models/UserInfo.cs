@@ -26,5 +26,5 @@ public class UserInfo : BaseModel
 
     [StringLength(2)]
     [SensitiveLexicon]
-    public string Mask { get; set; } = string.Empty;
+    public string Mask { get; set; } = "*";
 }

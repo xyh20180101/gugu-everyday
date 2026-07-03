@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { project as projectApi, addMessage } from '@/api'
-import { NScrollbar, NColorPicker } from 'naive-ui'
+import { NScrollbar, NColorPicker, NTimeline, NTimelineItem } from 'naive-ui'
 import GuguDatePicker from '@/components/GuguDatePicker.vue'
 
 const { t } = useI18n()
@@ -72,27 +72,33 @@ defineExpose({ open })
       <fluent-dialog-body>
         <fluent-button slot="close" appearance="transparent" icon-only aria-label="close" @click="close">
           <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path d="m4.09 4.22.06-.07a.5.5 0 0 1 .63-.06l.07.06L10 9.29l5.15-5.14a.5.5 0 0 1 .63-.06l.07.06c.18.17.2.44.06.63l-.06.07L10.71 10l5.14 5.15c.18.17.2.44.06.63l-.06.07a.5.5 0 0 1-.63.06l-.07-.06L10 10.71l-5.15 5.14a.5.5 0 0 1-.63.06l-.07-.06a.5.5 0 0 1-.06-.63l.06-.07L9.29 10 4.15 4.85a.5.5 0 0 1-.06-.63l.06-.07-.06.07Z" />
+            <path
+              d="m4.09 4.22.06-.07a.5.5 0 0 1 .63-.06l.07.06L10 9.29l5.15-5.14a.5.5 0 0 1 .63-.06l.07.06c.18.17.2.44.06.63l-.06.07L10.71 10l5.14 5.15c.18.17.2.44.06.63l-.06.07a.5.5 0 0 1-.63.06l-.07-.06L10 10.71l-5.15 5.14a.5.5 0 0 1-.63.06l-.07-.06a.5.5 0 0 1-.06-.63l.06-.07L9.29 10 4.15 4.85a.5.5 0 0 1-.06-.63l.06-.07-.06.07Z" />
           </svg>
         </fluent-button>
         <h2 slot="title">{{ isCreate ? $t('project.createProject') : $t('project.editProject') }}</h2>
-        <n-scrollbar style="height:100%;max-height:100%;padding:0 20px;box-sizing:border-box;overflow:visible;" trigger="none">
+        <n-scrollbar style="height:100%;max-height:100%;padding:0 20px;box-sizing:border-box;overflow:visible;"
+          trigger="none">
           <div class="flex-col">
             <fluent-field label-position="above">
               <label slot="label">{{ $t('common.name') }}</label>
-              <fluent-text-input slot="input" :required="true" spellcheck="false" autocomplete="off" v-model="project.name" />
-              <fluent-text slot="message" flag="value-missing" class="field-error">{{ $t('common.cannotBeEmpty') }}</fluent-text>
+              <fluent-text-input slot="input" :required="true" spellcheck="false" autocomplete="off"
+                v-model="project.name" />
+              <fluent-text slot="message" flag="value-missing" class="field-error">{{ $t('common.cannotBeEmpty')
+              }}</fluent-text>
             </fluent-field>
             <fluent-field label-position="above">
               <label slot="label">{{ $t('common.type') }}</label>
-              <fluent-dropdown slot="input" :required="true" type="combobox" :value="project.typeId" :disabled="!isCreate" @change="onTypeChange">
+              <fluent-dropdown slot="input" :required="true" type="combobox" :value="project.typeId"
+                :disabled="!isCreate" @change="onTypeChange">
                 <fluent-listbox>
                   <fluent-option v-for="pt in projectTypeList" :value="pt.id" :name="pt.name">
                     {{ pt.name }}
                   </fluent-option>
                 </fluent-listbox>
               </fluent-dropdown>
-              <fluent-text slot="message" flag="value-missing" class="field-error">{{ $t('common.cannotBeEmpty') }}</fluent-text>
+              <fluent-text slot="message" flag="value-missing" class="field-error">{{ $t('common.cannotBeEmpty')
+              }}</fluent-text>
             </fluent-field>
             <fluent-field label-position="above">
               <label slot="label">{{ $t('common.description') }}</label>
@@ -101,7 +107,8 @@ defineExpose({ open })
             <div class="flex-row">
               <fluent-field label-position="above">
                 <label slot="label">{{ $t('common.color') }}</label>
-                <n-color-picker slot="input" :modes="['hex']" v-model:value="project.color" :show-alpha="false" :render-label="() => ''" />
+                <n-color-picker slot="input" :modes="['hex']" v-model:value="project.color" :show-alpha="false"
+                  :render-label="() => ''" />
               </fluent-field>
               <fluent-field label-position="above">
                 <label slot="label">{{ $t('common.order') }}</label>
@@ -118,23 +125,44 @@ defineExpose({ open })
                 <gugu-date-picker slot="input" v-model="project.endTime" />
               </div>
             </div>
-            <fluent-field label-position="above" style="width:fit-content;">
-              <label slot="label">{{ $t('project.isPublic') }}</label>
-              <fluent-switch slot="input" :checked="project.isPublic" @change="(e) => project.isPublic = e.target.checked" />
-            </fluent-field>
-            <fluent-field label-position="above" v-if="projectTypeList.find(p => p.id === project.typeId)?.progressType === 0">
+            <div class="flex-row">
+              <div style="flex:1">
+                <fluent-field label-position="above" style="width:fit-content;">
+                  <label slot="label">{{ $t('project.isPublic') }}</label>
+                  <fluent-switch slot="input" :checked="project.isPublic"
+                    @change="(e) => project.isPublic = e.target.checked" />
+                </fluent-field>
+              </div>
+              <div style="flex:1"><fluent-field label-position="above" style="width:fit-content;">
+                  <label slot="label">{{ $t('project.isMask') }}</label>
+                  <fluent-switch slot="input" :checked="project.isMask"
+                    @change="(e) => project.isMask = e.target.checked" />
+                </fluent-field></div>
+            </div>
+            <fluent-field label-position="above"
+              v-if="projectTypeList.find(p => p.id === project.typeId)?.progressType === 0">
               <label slot="label">{{ $t('project.totalProgress') }}</label>
-              <fluent-text-input slot="input" spellcheck="false" autocomplete="off" v-model="project.extraData.totalProgress" />
+              <fluent-text-input slot="input" spellcheck="false" autocomplete="off"
+                v-model="project.extraData.totalProgress" />
             </fluent-field>
-            <fluent-field label-position="above" v-if="projectTypeList.find(p => p.id === project.typeId)?.progressType === 0">
+            <fluent-field label-position="above"
+              v-if="projectTypeList.find(p => p.id === project.typeId)?.progressType === 0">
               <label slot="label">{{ $t('project.progressUnit') }}</label>
-              <fluent-text-input slot="input" spellcheck="false" autocomplete="off" v-model="project.extraData.progressUnit" />
+              <fluent-text-input slot="input" spellcheck="false" autocomplete="off"
+                v-model="project.extraData.progressUnit" />
             </fluent-field>
-            <fluent-field label-position="above" v-show="projectTypeList.find(p => p.id === project.typeId)?.progressType === 1">
+            <fluent-field label-position="above"
+              v-show="projectTypeList.find(p => p.id === project.typeId)?.progressType === 1">
               <label slot="label">{{ $t('project.steps') }}</label>
-              <fluent-textarea block slot="input" spellcheck="false" :placeholder="$t('project.stepsPlaceholder')" v-model="stepsString"
+              <fluent-textarea block slot="input" spellcheck="false" :placeholder="$t('project.stepsPlaceholder')"
+                v-model="stepsString"
                 @input="() => { project.extraData.steps = stepsString.split(/\r?\n/).filter(Boolean) }" />
             </fluent-field>
+            <div style="width:100%;overflow: auto;" v-show="projectTypeList.find(p => p.id === project.typeId)?.progressType === 1">
+              <n-timeline slot="input" horizontal>
+                <n-timeline-item v-for="step in project.extraData.steps" :content="step" />
+              </n-timeline>
+            </div>
           </div>
         </n-scrollbar>
         <fluent-button slot="action" @click="close" :disabled="saving">{{ $t('common.cancel') }}</fluent-button>

@@ -71,6 +71,7 @@ export default {
     startTime: 'Start Date',
     endTime: 'End Date',
     isPublic: 'Public',
+    isMask: 'Hide Project Name',
     totalProgress: 'Total Progress',
     progressUnit: 'Unit',
     steps: 'Steps',

@@ -230,12 +230,12 @@ const onDelete = async () => {
                 <fluent-text-input slot="input" spellcheck="false" autocomplete="off"
                   v-model="projectType.extraData.progressUnit"></fluent-text-input>
               </fluent-field>
-              <fluent-field label-position="above" v-if="projectType.progressType === 1">
+              <fluent-field label-position="above" v-show="projectType.progressType === 1">
                 <label slot="label">{{ $t('project.steps') }}</label>
                 <fluent-textarea block slot="input" spellcheck="false" :placeholder="$t('project.stepsPlaceholder')" v-model="stepsString"
                   @input="(event) => { projectType.extraData.steps = stepsString.split(/\r?\n/).filter(Boolean) }"></fluent-textarea>
               </fluent-field>
-              <div style="width:100%;overflow: auto;" v-if="projectType.progressType === 1">
+              <div style="width:100%;overflow: auto;" v-show="projectType.progressType === 1">
                 <n-timeline slot="input" horizontal>
                   <n-timeline-item v-for="step in projectType.extraData.steps" :content="step" />
                 </n-timeline>

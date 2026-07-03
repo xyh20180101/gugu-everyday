@@ -42,7 +42,7 @@ public class ProjectController : BaseController
         if (request.IsArchived is not null)
             queryable = queryable.Where(p => p.IsArchived == request.IsArchived);
 
-        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
+        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.CreationTime);
 
         var count = queryable.Count();
         var items = queryable.Skip(request.Skip).Take(request.Count).ToList();
@@ -184,7 +184,7 @@ public class ProjectController : BaseController
 
         var queryable = (await _repository.WithDetailsAsync(p => p.Progresses, p => p.Type)).Where(p => p.UserId == user.Id && p.IsPublic && !p.IsArchived);
 
-        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
+        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.CreationTime);
 
         var count = queryable.Count();
         var items = queryable.Skip(request.Skip).Take(request.Count).ToList().ToDto();
@@ -192,7 +192,7 @@ public class ProjectController : BaseController
         foreach (var item in items)
         {
             item.Progresses = [.. item.Progresses.OrderBy(p => p.CreationTime)];
-            if (!string.IsNullOrEmpty(userInfo.Mask))
+            if (item.IsMask && !string.IsNullOrEmpty(userInfo.Mask))
                 item.Name = string.Join(string.Empty, item.Name.Select(_ => userInfo.Mask));
         }
 

@@ -33,6 +33,8 @@ public class Project : BaseModel
 
     public bool IsPublic { get; set; }
 
+    public bool IsMask { get; set; }
+
     public bool IsArchived { get; set; }
 
     [StringLength(1000)]

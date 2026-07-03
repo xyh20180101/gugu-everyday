@@ -27,6 +27,8 @@ public class ProjectDto
 
     public bool IsPublic { get; set; }
 
+    public bool IsMask { get; set; }
+
     public bool IsArchived { get; set; }
 
     public JsonElement ExtraData { get; set; }
