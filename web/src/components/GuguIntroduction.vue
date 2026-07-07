@@ -18,8 +18,8 @@ const manyFish = () => {
 
 const fish = () => {
   const randomX = 0.8
-  const randomY = 0.8
-  const randomR = 3.0
+  const randomY = 1
+  const randomR = 4.0
   const g = 9.8 * 100
 
   const rect = stage.value.getBoundingClientRect()

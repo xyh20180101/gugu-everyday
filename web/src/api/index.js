@@ -20,6 +20,33 @@ export function addMessage(text, intent = 'info', duration = 3000) {
 
 const BASE = import.meta.env.VITE_API_BASE
 
+export async function requestDownload(url, fileName) {
+  const token = localStorage.getItem('token')
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: token ? `Bearer ${token}` : '' }
+    })
+    if (res.ok) {
+      const blob = await res.blob()
+      const downloadUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = downloadUrl
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(downloadUrl)
+    } else if (res.status === 401) {
+      addMessage(t('login.sessionExpired'), 'error')
+      router.push({ name: 'login' })
+    } else {
+      addMessage(t('login.serverError'), 'error')
+    }
+  } catch {
+    addMessage(t('login.networkError'), 'error')
+  }
+}
+
 export async function request(url, options = {}) {
   const token = localStorage.getItem('token')
   options.headers = { ...options.headers, Authorization: token ? `Bearer ${token}` : '', 'Content-Type': 'application/json' }
@@ -88,8 +115,8 @@ export const project = {
 
 export const userInfo = {
   update: (id, data) => request(`${BASE}/api/userinfo/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  setUserName: (id, data) => request(`${BASE}/api/userinfo/${id}/set-user-name`, { method: 'PATCH', body: JSON.stringify(data) }),
-  setBulletin: (id, data) => request(`${BASE}/api/userinfo/${id}/set-bulletin`, { method: 'PATCH', body: JSON.stringify(data) }),
+  exportJson: () => requestDownload(`${BASE}/api/userinfo/export-json`, 'gugu-export.json'),
+  exportCsv: () => requestDownload(`${BASE}/api/userinfo/export-csv`, 'gugu-export.zip'),
 }
 
 export const home = {

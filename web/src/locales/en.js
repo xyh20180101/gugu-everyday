@@ -130,6 +130,7 @@ export default {
     newPassword: 'New Password',
     passwordMismatch: 'Passwords do not match',
     passwordRule: 'Letters or digits, 6-32 chars',
+    export: 'Project Data Export'
   },
   resetPassword: {
     title: 'Reset Password',

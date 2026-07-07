@@ -130,6 +130,7 @@ export default {
     newPassword: '新密码',
     passwordMismatch: '两次输入的密码不一致',
     passwordRule: '字母或数字, 长度6-32',
+    export: '项目数据导出'
   },
   resetPassword: {
     title: '重置密码',

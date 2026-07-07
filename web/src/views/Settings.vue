@@ -115,20 +115,24 @@ const onUpdatePassword = async () => {
         <div style="display: flex;flex-direction: column;gap: 16px;">
           <fluent-field label-position="above">
             <label class="hide-required" slot="label">{{ $t('settings.userName') }}</label>
-            <fluent-text-input slot="input" :required="true" spellcheck="false" v-model="userInfo.userName"></fluent-text-input>
+            <fluent-text-input slot="input" :required="true" spellcheck="false"
+              v-model="userInfo.userName"></fluent-text-input>
             <fluent-text slot="message" flag="value-missing" class="field-error">
               {{ $t('common.cannotBeEmpty') }}
             </fluent-text>
           </fluent-field>
-          <fluent-button style="width: fit-content;" @click="openUpdatePasswordDialog">{{ $t('settings.changePassword') }}</fluent-button>
+          <fluent-button style="width: fit-content;" @click="openUpdatePasswordDialog">{{ $t('settings.changePassword')
+          }}</fluent-button>
           <fluent-field label-position="above">
             <label slot="label">{{ $t('settings.bulletin') }}</label>
             <fluent-textarea block slot="input" spellcheck="false" v-model="userInfo.bulletin"></fluent-textarea>
           </fluent-field>
           <fluent-divider style="width: 100%;"></fluent-divider>
           <div style="display: flex;gap: 16px">
-            <fluent-button style="width: fit-content;" @click="openPublicShowPage">{{ $t('settings.openShowPage') }}</fluent-button>
-            <fluent-button style="width: fit-content;" @click="copyPublicShowPage">{{ $t('settings.copyLink') }}</fluent-button>
+            <fluent-button style="width: fit-content;" @click="openPublicShowPage">{{ $t('settings.openShowPage')
+            }}</fluent-button>
+            <fluent-button style="width: fit-content;" @click="copyPublicShowPage">{{ $t('settings.copyLink')
+            }}</fluent-button>
           </div>
           <fluent-field label-position="above">
             <label class="hide-required" slot="label">{{ $t('settings.showPageTitle') }}</label>
@@ -138,20 +142,32 @@ const onUpdatePassword = async () => {
               {{ $t('common.cannotBeEmpty') }}
             </fluent-text>
           </fluent-field>
-          <fluent-field label-position="above" style="width: fit-content;">
-            <label slot="label">{{ $t('settings.enableShowPage') }}</label>
-            <fluent-switch slot="input" :checked="userInfo.isShowPageEnabled"
-              @change="(event) => { userInfo.isShowPageEnabled = event.target.checked; }"></fluent-switch>
-          </fluent-field>
-          <fluent-field label-position="above" style="width: fit-content;">
-            <label slot="label">{{ $t('settings.enableReminder') }}</label>
-            <fluent-switch slot="input" :checked="userInfo.isAllowReminder"
-              @change="(event) => { userInfo.isAllowReminder = event.target.checked; }"></fluent-switch>
-          </fluent-field>
+          <div style="display: flex;gap: 16px">
+            <div style="width: 96px;">
+              <fluent-field label-position="above" style="width: fit-content;">
+                <label slot="label">{{ $t('settings.enableShowPage') }}</label>
+                <fluent-switch slot="input" :checked="userInfo.isShowPageEnabled"
+                  @change="(event) => { userInfo.isShowPageEnabled = event.target.checked; }"></fluent-switch>
+              </fluent-field>
+            </div>
+            <div style="width: 96px;">
+              <fluent-field label-position="above" style="width: fit-content;">
+                <label slot="label">{{ $t('settings.enableReminder') }}</label>
+                <fluent-switch slot="input" :checked="userInfo.isAllowReminder"
+                  @change="(event) => { userInfo.isAllowReminder = event.target.checked; }"></fluent-switch>
+              </fluent-field>
+            </div>
+          </div>
           <fluent-field label-position="above">
             <label class="hide-required" slot="label">{{ $t('settings.mask') }}</label>
             <fluent-text-input slot="input" spellcheck="false" v-model="userInfo.mask"></fluent-text-input>
           </fluent-field>
+          <fluent-divider style="width: 100%;"></fluent-divider>
+          <fluent-text>{{ $t('settings.export') }}</fluent-text>
+          <div slot="input" style="display: flex;gap: 16px;margin-top: -12px;">
+            <fluent-button style="width: fit-content;" @click="userInfoApi.exportJson()">json</fluent-button>
+            <fluent-button style="width: fit-content;" @click="userInfoApi.exportCsv()">csv</fluent-button>
+          </div>
         </div>
       </n-scrollbar>
       <fluent-button appearance="primary" type="submit" style="margin-left: 16px;" :disabled="saveLoading">
@@ -179,8 +195,8 @@ const onUpdatePassword = async () => {
             <div class="flex-col">
               <fluent-field label-position="above">
                 <label class="hide-required" slot="label">{{ $t('settings.oldPassword') }}</label>
-                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
-                  v-model="updatePasswordModel.oldPassword"></fluent-text-input>
+                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password"
+                  autocomplete="off" v-model="updatePasswordModel.oldPassword"></fluent-text-input>
                 <fluent-text slot="message" flag="value-missing" class="field-error">
                   {{ $t('settings.passwordRule') }}
                 </fluent-text>
@@ -190,8 +206,8 @@ const onUpdatePassword = async () => {
               </fluent-field>
               <fluent-field label-position="above">
                 <label class="hide-required" slot="label">{{ $t('settings.newPassword') }}</label>
-                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password" autocomplete="off"
-                  v-model="updatePasswordModel.newPassword"></fluent-text-input>
+                <fluent-text-input slot="input" :required="true" pattern="^[A-Za-z\d]{4,50}$" type="password"
+                  autocomplete="off" v-model="updatePasswordModel.newPassword"></fluent-text-input>
                 <fluent-text slot="message" flag="value-missing" class="field-error">
                   {{ $t('settings.passwordRule') }}
                 </fluent-text>
