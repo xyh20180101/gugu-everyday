@@ -121,6 +121,7 @@ export const userInfo = {
 
 export const home = {
   waterfall: (params) => request(`${BASE}/api/home/waterfall?${new URLSearchParams(params)}`),
+  calendar: (params) => request(`${BASE}/api/home/calendar?${new URLSearchParams(params)}`),
 }
 
 export const reminder = {

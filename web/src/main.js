@@ -1,6 +1,6 @@
 import './assets/main.css'
 
-import { createApp, ref, watch, provide } from 'vue'
+import { createApp, ref, watch } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { i18n } from './i18n'
@@ -11,18 +11,31 @@ import { webDarkTheme, webLightTheme } from '@fluentui/tokens'
 const themeName = ref(localStorage.getItem('themeName'))
 
 if (!themeName.value || themeName.value === 'null') {
-    themeName.value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'webDarkTheme' : 'webLightTheme'
-    localStorage.setItem('themeName', themeName.value)
+  themeName.value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'webDarkTheme' : 'webLightTheme'
+  localStorage.setItem('themeName', themeName.value)
 }
 setTheme(themeName.value === 'webDarkTheme' ? webDarkTheme : webLightTheme)
 watch(themeName, (val) => {
-    setTheme(val === 'webDarkTheme' ? webDarkTheme : webLightTheme)
-    localStorage.setItem('themeName', val)
+  setTheme(val === 'webDarkTheme' ? webDarkTheme : webLightTheme)
+  localStorage.setItem('themeName', val)
 })
-//相同值不会触发
 window.addEventListener('storage', (e) => {
-    if (e.key === 'themeName')
-        themeName.value = e.newValue
+  if (e.key === 'themeName')
+    themeName.value = e.newValue
+})
+
+const locale = ref(localStorage.getItem('locale'))
+if (!locale.value || locale.value === 'null') {
+  const lang = (navigator.language || navigator.userLanguage || '').toLowerCase()
+  locale.value = lang.startsWith('zh') ? 'zh-CN' : 'en'
+  localStorage.setItem('locale', locale.value)
+}
+watch(locale, (val) => {
+  localStorage.setItem('locale', val)
+})
+window.addEventListener('storage', (e) => {
+  if (e.key === 'locale')
+    locale.value = e.newValue
 })
 
 import '@fluentui/web-components/avatar.js';
@@ -52,5 +65,6 @@ const app = createApp(App)
 app.use(router)
 app.use(i18n)
 app.provide('themeName', themeName)
+app.provide('locale', locale)
 
 app.mount('#app')

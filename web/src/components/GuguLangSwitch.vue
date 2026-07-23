@@ -1,11 +1,13 @@
 <script setup>
+import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()
+const localeName = inject('locale')
 
 const toggle = () => {
   locale.value = locale.value === 'zh-CN' ? 'en' : 'zh-CN'
-  localStorage.setItem('locale', locale.value)
+  localeName.value = locale.value
 }
 </script>
 

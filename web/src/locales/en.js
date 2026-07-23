@@ -190,4 +190,7 @@ export default {
     en: 'English',
     switch: 'Switch language',
   },
+  guguCalendar: {
+    schedule: 'Schedule'
+  }
 }

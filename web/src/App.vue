@@ -1,9 +1,21 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, computed, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { messageStore } from '@/api'
-import { NConfigProvider } from 'naive-ui'
+import { NConfigProvider, zhCN, dateZhCN, darkTheme, lightTheme } from 'naive-ui'
+
 const position = ref('top')
+
+const themeName = inject('themeName')
+const naiveUITheme = computed(() => themeName.value === 'webDarkTheme' ? darkTheme : lightTheme)
+
+const localeName = inject('locale')
+const naiveUILocale = ref(localeName.value === 'zh-CN' ? zhCN : null)
+const naiveUIDateLocale = ref(localeName.value === 'zh-CN' ? dateZhCN : null)
+watch(localeName, (val) => {
+  naiveUILocale.value = val === 'zh-CN' ? zhCN : null
+  naiveUIDateLocale.value = val === 'zh-CN' ? dateZhCN : null
+})
 
 const themeOverrides = {
   Button: {
@@ -16,6 +28,10 @@ const themeOverrides = {
     borderPressed: '1px soild var(--colorCompoundBrandStrokePressed)',
     borderFocus: '1px soild var(--colorCompoundBrandStrokeHover)',
     rippleColor: 'transparent'
+  },
+  Calendar: {
+    dateColorCurrent: 'var(--colorCompoundBrandStroke)',
+    barColor: 'var(--colorCompoundBrandStroke)'
   },
   DataTable: {
     actionDividerColor: '',
@@ -89,7 +105,8 @@ const themeOverrides = {
 
 <template>
   <div class="app">
-    <n-config-provider :theme-overrides="themeOverrides">
+    <n-config-provider :theme="naiveUITheme" :theme-overrides="themeOverrides" :locale="naiveUILocale"
+      :date-locale="naiveUIDateLocale">
       <RouterView />
       <transition name="fade">
         <div v-show="messageStore.messages.length > 0" :class="['message-stack', position]">

@@ -191,4 +191,7 @@ export default {
     en: 'English',
     switch: '切换语言',
   },
+  guguCalendar: {
+    schedule: '排期'
+  }
 }

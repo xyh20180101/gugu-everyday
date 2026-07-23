@@ -23,7 +23,7 @@ public class HomeController : BaseController
         var end = start.AddMonths(1);
 
         var items = (await _projectRepository.WithDetailsAsync(p => p.Progresses, p => p.Type))
-        .Where(p => p.UserId == CurrentUserId && (p.StartTime != null && p.StartTime >= start && p.StartTime < end || p.EndTime != null && p.EndTime >= start && p.EndTime < end))
+        .Where(p => !p.IsArchived && p.UserId == CurrentUserId && (p.StartTime != null && p.StartTime >= start && p.StartTime < end || p.EndTime != null && p.EndTime >= start && p.EndTime < end))
         .ToList();
 
         var projects = items.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
@@ -57,5 +57,21 @@ public class HomeController : BaseController
     public class WaterfallDataItemStyle
     {
         public string Color { get; set; }
+    }
+
+    [HttpGet("calendar")]
+    public async Task<ICollection<ProjectDto>> Calendar([FromQuery] int year, [FromQuery] int month)
+    {
+        var startTime = new DateTime(year, month - 1, 1);
+        var endTime = new DateTime(year, month + 1, 28);
+
+        var queryable = (await _projectRepository.GetQueryableAsync())
+        .Where(p => p.UserId == CurrentUserId && !p.IsArchived &&
+        (p.StartTime == null || p.EndTime >= startTime) &&
+        (p.EndTime == null || p.StartTime <= endTime));
+
+        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
+
+        return queryable.ToList().ToDto();
     }
 }

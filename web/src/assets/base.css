@@ -84,3 +84,39 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ================= 极简手机端风格滚动条 ================= */
+
+/* 1. 滚动条整体宽度和高度 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* 2. 滚动条轨道（背景保持透明，模仿手机端的无边框感） */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 3. 滚动条滑块（圆角、半透明灰） */
+::-webkit-scrollbar-thumb {
+  background-color: var(--colorNeutralStroke2); /* 半透明灰色 */
+  border-radius: 5px;                   /* 手机端标志性的圆角 */
+  transition: background-color .2s cubic-bezier(.4, 0, .2, 1);
+  cursor: pointer;
+}
+
+/* 4. 鼠标悬浮到滑块上时加深颜色 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--colorNeutralStroke1);
+}
+
+/* 5. 暗黑模式适配（如果项目支持暗色主题） */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    /* background-color: rgba(255, 255, 255, 0.3); */
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    /* background-color: rgba(255, 255, 255, 0.5); */
+  }
+}

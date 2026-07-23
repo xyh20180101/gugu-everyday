@@ -9,6 +9,7 @@ import { NScrollbar } from 'naive-ui'
 import GuguIntroduction from '@/components/GuguIntroduction.vue'
 import GuguProjectCard from '@/components/GuguProjectCard.vue'
 import GuguLangSwitch from '@/components/GuguLangSwitch.vue'
+import GuguCalendar from '@/components/GuguCalendar.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -55,6 +56,7 @@ const doReminder = async (projectId) => {
         <fluent-textarea style="max-width:600px;width:100%;" block autoResize readonly spellcheck="false"
           v-model="publicData.bulletin" />
         <GuguProjectCard v-for="p in publicData.items" :key="p.id" :project="p" @reminder="doReminder" />
+        <GuguCalendar style="max-width:1200px;margin-bottom: 16px;" :project-list="publicData.items"></GuguCalendar>
       </div>
     </n-scrollbar>
   </div>
