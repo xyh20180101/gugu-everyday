@@ -60,15 +60,10 @@ public class HomeController : BaseController
     }
 
     [HttpGet("calendar")]
-    public async Task<ICollection<ProjectDto>> Calendar([FromQuery] int year, [FromQuery] int month)
+    public async Task<ICollection<ProjectDto>> Calendar()
     {
-        var startTime = new DateTime(year, month - 1, 1);
-        var endTime = new DateTime(year, month + 1, 28);
-
         var queryable = (await _projectRepository.GetQueryableAsync())
-        .Where(p => p.UserId == CurrentUserId && !p.IsArchived &&
-        (p.StartTime == null || p.EndTime >= startTime) &&
-        (p.EndTime == null || p.StartTime <= endTime));
+        .Where(p => p.UserId == CurrentUserId && !p.IsArchived);
 
         queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
 

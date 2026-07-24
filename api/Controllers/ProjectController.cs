@@ -184,7 +184,7 @@ public class ProjectController : BaseController
 
         var queryable = (await _repository.WithDetailsAsync(p => p.Progresses, p => p.Type)).Where(p => p.UserId == user.Id && p.IsPublic && !p.IsArchived);
 
-        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.CreationTime);
+        queryable = queryable.OrderBy(p => p.Order).ThenBy(p => p.StartTime);
 
         var count = queryable.Count();
         var items = queryable.Skip(request.Skip).Take(request.Count).ToList().ToDto();
